@@ -1,8 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
-import { collection, doc, getDocs, getDoc ,  query,where } from 'firebase/firestore';
+import { collection, doc, getDocs, getDoc , setDoc ,} from 'firebase/firestore';
 import { Day, Time } from '../types';
+
+
 
 const Page = () => {
   const [studentTimetable, setStudentTimetable] = useState<any>([]);
@@ -12,6 +14,10 @@ const Page = () => {
   useEffect(() => {
     fetchUserTimetable(loggedInUserId);
   }, [loggedInUserId]);
+
+  // useEffect(() => {
+  //   createAllTimeSlots();
+  // }, []);
 
   const fetchUserTimetable = async (userId: string) => {
     try {
@@ -103,3 +109,23 @@ const Page = () => {
 };
 
 export default Page;
+  // const createAllTimeSlots = async () => {
+  // const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  // const timings = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'];
+  // for (const day of days) {
+  //   for (const time of timings) {
+
+  //       const docRef = await getDocs(collection(db, 'attendance'))
+  //       docRef.forEach((doc:any) => {
+  //           console.log(`${doc.id} => ${doc.data()}`);
+  //         });
+  //     const data = {
+  //       attendance: [],
+  //       "day-time" : `${day}-${time}`,
+  //     };
+
+  //     await setDoc(doc(db, 'attendance', `${day}-${time}`), data);
+  //   }
+  // }
+
+  // console.log('All timeslots created!');};

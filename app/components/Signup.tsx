@@ -16,26 +16,47 @@ function SignUpForm() {
     const password = data.get("password") as string;
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      const userData = {
-        uid: user.uid,
-        email: user.email,
-        displayName: `${data.get("firstName")} ${data.get("lastName")}`,
-        role: data.get("role"),
-      };
-
-      // Create a user document in Firestore
-      const userDocRef = doc(db, "users", user.uid);
-      await setDoc(userDocRef, userData);
-
-      // Update the user's profile
-      await updateProfile(user, {
-        displayName: `${data.get("firstName")} ${data.get("lastName")}`,
+      const userCredential: any = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      ).then((userCredential) => {
+        // Signed up 
+        const user = userCredential.user;
+        console.log("user created");
+        console.log(user);
+        console.log(data.get("role"))
+        const userData = {
+          uid: user.uid,
+          email: user.email,
+          displayName: `${data.get("firstName")} ${data.get("lastName")}`,
+          role: data.get("role"),
+        };
+  
+        // Create a user document in Firestore
+        const userDocRef = doc(db, "users", user.uid);
+        try{setDoc(userDocRef, userData);}
+        catch(e){
+          console.log(e);
+        }
+  
+        // Update the user's profile
+         updateProfile(userCredential.user, {
+          displayName: `${data.get("firstName")} ${data.get("lastName")}`,
+        });
+  
+        router.push(`/${data.get("role")?.toString().toLowerCase()}`);
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode);
+        console.log(errorMessage);
+        // ..
       });
-
-      router.push(`/`);
+    
+      
     } catch (error: any) {
       const errorMessage = error.message;
       console.error(errorMessage);
@@ -45,7 +66,10 @@ function SignUpForm() {
 
   return (
     <div className="form-container sign-up-container">
-      <form onSubmit={handleSubmit} className="loginform bg-customBlue p-8 rounded-md">
+      <form
+        onSubmit={handleSubmit}
+        className="loginform bg-customBlue p-8 rounded-md"
+      >
         <h1 className="text-2xl font-bold mb-4">Create Account</h1>
 
         <div className="">
@@ -77,7 +101,7 @@ function SignUpForm() {
           placeholder="Password"
         />
 
-        <select className="input-field" name="role">
+        <select className="block w-full mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 input-field" name="role" >
           <option value="Student">Student</option>
           <option value="Admin">Admin</option>
           <option value="Teacher">Teacher</option>

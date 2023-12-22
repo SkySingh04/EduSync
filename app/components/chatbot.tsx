@@ -25,18 +25,35 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ onClose }) => {
     setNewMessage(e.target.value);
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async(e: FormEvent) => {
     e.preventDefault();
 
     if (newMessage.trim() === "") {
       return;
     }
-
+  
     // Add the user's message to the messages array
     sendMessage(newMessage);
-
+  
     // Clear the input field
     setNewMessage("");
+  
+    try {
+      // Make a GET request to the specified URL with query parameters
+      const userId = "tPAS3CycNiaMHk8DB6YvsBuClSA3"; // Replace with your user ID
+      const queryParams = new URLSearchParams({ tag: newMessage, id: userId });
+  
+      const response = await fetch(`https://7638-34-70-22-243.ngrok-free.app?${queryParams}`);
+      if (response.ok) {
+        const responseData = await response.json();
+        // Render the response message from the API
+        receiveMessage(responseData.message);
+      } else {
+        console.error("Failed to fetch data");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   // Function to add a user message to the messages array

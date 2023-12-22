@@ -5,7 +5,7 @@ import { db } from "../firebase";
 import { collection, getDoc, doc, getDocs, setDoc } from "firebase/firestore";
 import { Day, Time, Teacher, Student, SlotData } from "../types";
 import { serverTimestamp } from "firebase/firestore";
-const Admin = () => {
+const Teacher = () => {
   const [slotData, setSlotData] = useState<SlotData>({});
   const [selectedSlot, setSelectedSlot] = useState<string>("");
   const [showUserList, setShowUserList] = useState(false);
@@ -13,7 +13,6 @@ const Admin = () => {
   const [time, setTime] = useState<Time>("9:00 AM");
   const [usersList, setUsersList] = useState<any[]>([]); // Assuming your user data structure
   const [selectedStudent, setSelectedStudent] = useState<string>("");
-  const [selectedTeacher, setSelectedTeacher] = useState<string>("");
 
   useEffect(() => {
     fetchSlotsData();
@@ -50,10 +49,10 @@ const Admin = () => {
     setShowUserList(true);
   };
   async function handleButtonClick() {
-    if (selectedStudent && selectedTeacher && day && time) {
+    if (selectedStudent && day && time) {
       const selectedSlot = `${day}-${time}`;
       const timeslotRef = doc(db, "timeslots", selectedSlot);
-
+        const selectedTeacher="CHJ3KL849BSFzv3brprJ62gTVF62"
       try {
         const studentRef = doc(db, "users", selectedStudent);
         const teacherRef = doc(db, "users", selectedTeacher);
@@ -250,7 +249,7 @@ const Admin = () => {
                     onClick={() => handleSlotClick(day, time)}
                     className=" bg-green-400 text-black px-2 py-1 rounded-full"
                   >
-                    Add User
+                    Add Class
                   </button>
                 </div>
               </div>
@@ -263,9 +262,7 @@ const Admin = () => {
   function handleUserSelect(role: string, userId: string) {
     if (role === "student") {
       setSelectedStudent(userId);
-    } else if (role === "teacher") {
-      setSelectedTeacher(userId);
-    }
+    } 
   }
   return (
     <div className="p-8">
@@ -297,25 +294,6 @@ const Admin = () => {
               </select>
             </div>
             {/* Dropdown for selecting teachers */}
-            <div className="mb-4">
-              <label htmlFor="teachersDropdown" className="mr-2">
-                Teachers:
-              </label>
-              <select
-                id="teachersDropdown"
-                onChange={(e) => handleUserSelect("teacher", e.target.value)}
-                className="text-white"
-              >
-                <option value="">Select Teacher</option>
-                {usersList
-                  .filter((user) => user.role === "Teacher")
-                  .map((teacher, index) => (
-                    <option key={index} value={teacher.uid}>
-                      {teacher.displayName}
-                    </option>
-                  ))}
-              </select>
-            </div>
             {/* Button to trigger onClick function */}
             <button
               onClick={handleButtonClick}
@@ -330,7 +308,7 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default Teacher;
 
 // const createAllTimeSlots = async () => {
 //   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];

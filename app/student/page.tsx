@@ -137,7 +137,7 @@ onAuthStateChanged(auth, (user) => {
           <p>Loading...</p>
         )}
         <div>
-          <UploadedFilesList></UploadedFilesList>
+          <UploadedFilesList userId={userId}></UploadedFilesList>
         </div>
       </div>
     );

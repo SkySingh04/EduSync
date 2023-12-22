@@ -2,10 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
-
-const UploadedFilesList: React.FC = () => {
+interface UploadedFilesListProps {
+  userId: string;
+}
+const UploadedFilesList: React.FC<UploadedFilesListProps> = ({userId}) => {
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
-  const currentStudentId = "a4tk6CdwtgT3IJMMJsz9A5BjAT03";
+  const currentStudentId = userId;
 
   useEffect(() => {
     fetchAllFiles();

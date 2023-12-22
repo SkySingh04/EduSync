@@ -6,6 +6,9 @@ import { collection, getDoc, doc, getDocs, setDoc } from "firebase/firestore";
 import { Day, Time, Teacher, Student, SlotData } from "../types";
 import { serverTimestamp } from "firebase/firestore";
 import PageComponent from "../components/UploadForm";
+import { useRouter } from "next/navigation";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 const Teacher = () => {
   const [slotData, setSlotData] = useState<SlotData>({});
   const [selectedSlot, setSelectedSlot] = useState<string>("");
@@ -14,9 +17,33 @@ const Teacher = () => {
   const [time, setTime] = useState<Time>("9:00 AM");
   const [usersList, setUsersList] = useState<any[]>([]); // Assuming your user data structure
   const [selectedStudent, setSelectedStudent] = useState<string>("");
-  const currentUserId = "CHJ3KL849BSFzv3brprJ62gTVF62";
   const [selectedSubject, setSelectedSubject] = useState<string>("");
   const subjectList = ['Maths' , 'Science' , 'English' , 'Hindi' , 'Social Science'];
+  const router = useRouter();
+  const [userId, setUserId] = useState<string>("");
+  console.log(userId)
+  const currentUserId = "CHJ3KL849BSFzv3brprJ62gTVF62";
+  const auth = getAuth();
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const uid = user.uid;
+    setUserId(uid);
+    const userRef = doc(db, "users", uid);
+      const userDoc = getDoc(userRef).then((doc) => {
+        if (doc.exists()) { 
+          console.log("Document data:", doc.data());
+          if(doc.data()?.role!=="Teacher" ){
+            router.push("/login")
+          }
+        }
+      }
+      ).catch((error) => {
+        console.log("Error getting document:", error);
+      });
+  } else {
+    router.push("/login")
+  }
+});
 
 
   useEffect(() => {

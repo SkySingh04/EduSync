@@ -16,6 +16,8 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 
 const Page = () => {
+  
+  const [URL,setURL]=useState("https://meet.google.com/icy-vveg-aew")
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [studentTimetable, setStudentTimetable] = useState<any>([]);
    const [userId, setUserId] = useState<string>("");
@@ -124,6 +126,11 @@ onAuthStateChanged(auth, (user) => {
                       <p>Name: {student.name}</p>
                       <p>Subject: {student.subject}</p>
                       <p>Teacher:{student.teacherName}</p>
+                      <p><a 
+                      className="text-blue-600 link-secondary" 
+
+                      
+                      href={URL}>Class Link</a></p>
                       {/* Add more details as needed */}
                     </div>
                   ))

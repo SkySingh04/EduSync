@@ -10,7 +10,9 @@ import { useRouter } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const Teacher = () => {
+  const meetingLink = "https://meet.google.com/icy-vveg-aew";
   const [slotData, setSlotData] = useState<SlotData>({});
+  const [URL, setURL] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<string>("");
   const [showUserList, setShowUserList] = useState(false);
   const [day, setDay] = useState<Day>("Monday");
@@ -18,33 +20,39 @@ const Teacher = () => {
   const [usersList, setUsersList] = useState<any[]>([]); // Assuming your user data structure
   const [selectedStudent, setSelectedStudent] = useState<string>("");
   const [selectedSubject, setSelectedSubject] = useState<string>("");
-  const subjectList = ['Maths' , 'Science' , 'English' , 'Hindi' , 'Social Science'];
+  const subjectList = [
+    "Maths",
+    "Science",
+    "English",
+    "Hindi",
+    "Social Science",
+  ];
   const router = useRouter();
   const [userId, setUserId] = useState<string>("");
-  console.log(userId)
+  console.log(userId);
   const currentUserId = "CHJ3KL849BSFzv3brprJ62gTVF62";
   const auth = getAuth();
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    const uid = user.uid;
-    setUserId(uid);
-    const userRef = doc(db, "users", uid);
-      const userDoc = getDoc(userRef).then((doc) => {
-        if (doc.exists()) { 
-          console.log("Document data:", doc.data());
-          if(doc.data()?.role!=="Teacher" ){
-            router.push("/login")
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const uid = user.uid;
+      setUserId(uid);
+      const userRef = doc(db, "users", uid);
+      const userDoc = getDoc(userRef)
+        .then((doc) => {
+          if (doc.exists()) {
+            console.log("Document data:", doc.data());
+            if (doc.data()?.role !== "Teacher") {
+              router.push("/login");
+            }
           }
-        }
-      }
-      ).catch((error) => {
-        console.log("Error getting document:", error);
-      });
-  } else {
-    router.push("/login")
-  }
-});
-
+        })
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
+    } else {
+      router.push("/login");
+    }
+  });
 
   useEffect(() => {
     fetchSlotsData();
@@ -76,6 +84,7 @@ onAuthStateChanged(auth, (user) => {
     setSelectedSlot(`${day1}-${time1}`);
     setDay(day1);
     setTime(time1);
+    setURL(meetingLink);
     console.log(selectedSlot);
     console.log(day, time);
     setShowUserList(true);
@@ -125,7 +134,8 @@ onAuthStateChanged(auth, (user) => {
               {
                 name: studentData.displayName,
                 studentId: selectedStudent,
-                subject: selectedSubject, // You might retrieve this data from somewhere
+                subject: selectedSubject,
+                meetingLink: URL, // You might retrieve this data from somewhere
               },
             ],
             teachers: [
@@ -247,7 +257,13 @@ onAuthStateChanged(auth, (user) => {
                           {index + 1} : {student.name}
                           <br />
                           Subject :<b> {student.subject}</b>
+                          <br></br>
+                          <a
+                          className="link-hover text-blue-600"
+                           href={meetingLink}>Meeting Link</a>
                         </li>
+                        
+                        
                       )
                     )}
                   </ol>
@@ -268,9 +284,9 @@ onAuthStateChanged(auth, (user) => {
   function handleUserSelect(role: string, userId: string) {
     if (role === "student") {
       setSelectedStudent(userId);
-    } 
-    else if (role === "subject") {
-        setSelectedSubject(userId);}
+    } else if (role === "subject") {
+      setSelectedSubject(userId);
+    }
   }
   return (
     <div className="">
@@ -283,15 +299,16 @@ onAuthStateChanged(auth, (user) => {
         </div>
       </div> */}
 
-<div className="flex justify-center items-center">
-  <div className="w-1/2 p-4">
-    <h1 className="text-6xl ml-[95px] font-bold mb-4">Teacher Dashboard</h1>
-  </div>
-  <div className="w-1/2 p-4">
-    <PageComponent />
-  </div>
-</div>
-
+      <div className="flex justify-center items-center">
+        <div className="w-1/2 p-4">
+          <h1 className="text-6xl ml-[95px] font-bold mb-4">
+            Teacher Dashboard
+          </h1>
+        </div>
+        <div className="w-1/2 p-4">
+          <PageComponent />
+        </div>
+      </div>
 
       {generateTimeSlots()}
       {/* Show user list popup */}
@@ -329,12 +346,11 @@ onAuthStateChanged(auth, (user) => {
                 className="text-white"
               >
                 <option value="">Select Subject</option>
-                {subjectList
-                  .map((subject, index) => (
-                    <option key={index} value={subject}>
-                      {subject}
-                    </option>
-                  ))}
+                {subjectList.map((subject, index) => (
+                  <option key={index} value={subject}>
+                    {subject}
+                  </option>
+                ))}
               </select>
             </div>
             {/* Dropdown for selecting teachers */}

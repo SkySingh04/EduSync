@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useEdgeStore } from "../lib/edgestore";
 import { db } from "../firebase";
 import { getDocs, addDoc, collection, DocumentData } from "firebase/firestore";
+import toast from "react-hot-toast/headless"
 
 interface User {
   uid: string;
@@ -92,6 +93,7 @@ export default function PageComponent() {
                   uploadedTime: new Date(),
                 });
                 console.log("successfull")
+                toast.success("successfully uploaded file")
               } catch (error) {
                 console.error("Error uploading file:", error);
               }

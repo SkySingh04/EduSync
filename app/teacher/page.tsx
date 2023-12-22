@@ -14,7 +14,9 @@ const Teacher = () => {
   const [apiResponse, setAPIResponse] = useState<string>("");
   
 
+  const meetingLink = "https://meet.google.com/icy-vveg-aew";
   const [slotData, setSlotData] = useState<SlotData>({});
+  const [URL, setURL] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<string>("");
   const [showUserList, setShowUserList] = useState(false);
   const [day, setDay] = useState<Day>("Monday");
@@ -86,6 +88,7 @@ const Teacher = () => {
     setSelectedSlot(`${day1}-${time1}`);
     setDay(day1);
     setTime(time1);
+    setURL(meetingLink);
     console.log(selectedSlot);
     console.log(day, time);
     setShowUserList(true);
@@ -135,7 +138,8 @@ const Teacher = () => {
               {
                 name: studentData.displayName,
                 studentId: selectedStudent,
-                subject: selectedSubject, // You might retrieve this data from somewhere
+                subject: selectedSubject,
+                meetingLink: URL, // You might retrieve this data from somewhere
               },
             ],
             teachers: [
@@ -257,7 +261,13 @@ const Teacher = () => {
                           {index + 1} : {student.name}
                           <br />
                           Subject :<b> {student.subject}</b>
+                          <br></br>
+                          <a
+                          className="link-hover text-blue-600"
+                           href={meetingLink}>Meeting Link</a>
                         </li>
+                        
+                        
                       )
                     )}
                   </ol>

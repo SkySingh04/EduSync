@@ -8,9 +8,11 @@ import { serverTimestamp } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 const Admin = () => {
+  const meetingLink="https://meet.google.com/icy-vveg-aew"
   
   const [slotData, setSlotData] = useState<SlotData>({});
   const [selectedSlot, setSelectedSlot] = useState<string>("");
+  const [URL,setURL]=useState("");
   const [showUserList, setShowUserList] = useState(false);
   const [day, setDay] = useState<Day>("Monday");
   const [time, setTime] = useState<Time>("9:00 AM");
@@ -74,6 +76,7 @@ const Admin = () => {
     setSelectedSlot(`${day1}-${time1}`);
     setDay(day1);
     setTime(time1);
+    setURL(meetingLink);
     console.log(selectedSlot);
     console.log(day, time);
     setShowUserList(true);
@@ -105,7 +108,8 @@ const Admin = () => {
               {
                 name: studentData.displayName,
                 studentId: selectedStudent,
-                subject: selectedSubject, // You might retrieve this data from somewhere
+                subject: selectedSubject,
+                meetingLink:URL // You might retrieve this data from somewhere
               },
             ],
             teachers: [
@@ -216,6 +220,8 @@ const Admin = () => {
                       (teacher: Teacher, index) => (
                         <li key={index}>
                           {index + 1} : {teacher.name}
+                          <br>
+                          </br>
                         </li>
                       )
                     )}
@@ -230,6 +236,10 @@ const Admin = () => {
                         {index +1} :   {student.name}
                         <br />
                         Subject :<b> {student.subject}</b>
+                        <br></br>
+                        <a
+                          className="link-hover text-blue-600"
+                           href={meetingLink}>Meeting Link</a>
                         </li>
                       )
                     )}

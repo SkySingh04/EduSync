@@ -15,6 +15,9 @@ const Teacher = () => {
   const [usersList, setUsersList] = useState<any[]>([]); // Assuming your user data structure
   const [selectedStudent, setSelectedStudent] = useState<string>("");
   const currentUserId = "CHJ3KL849BSFzv3brprJ62gTVF62";
+  const [selectedSubject, setSelectedSubject] = useState<string>("");
+  const subjectList = ['Maths' , 'Science' , 'English' , 'Hindi' , 'Social Science'];
+
 
   useEffect(() => {
     fetchSlotsData();
@@ -95,7 +98,7 @@ const Teacher = () => {
               {
                 name: studentData.displayName,
                 studentId: selectedStudent,
-                subject: "maths", // You might retrieve this data from somewhere
+                subject: selectedSubject, // You might retrieve this data from somewhere
               },
             ],
             teachers: [
@@ -238,7 +241,9 @@ const Teacher = () => {
   function handleUserSelect(role: string, userId: string) {
     if (role === "student") {
       setSelectedStudent(userId);
-    }
+    } 
+    else if (role === "subject") {
+        setSelectedSubject(userId);}
   }
   return (
     <div className="">
@@ -283,6 +288,24 @@ const Teacher = () => {
                   .map((student, index) => (
                     <option key={index} value={student.uid}>
                       {student.displayName}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="subjectsDropdown" className="mr-2">
+                Subjects:
+              </label>
+              <select
+                id="subjectsDropdown"
+                onChange={(e) => handleUserSelect("subject", e.target.value)}
+                className="text-white"
+              >
+                <option value="">Select Subject</option>
+                {subjectList
+                  .map((subject, index) => (
+                    <option key={index} value={subject}>
+                      {subject}
                     </option>
                   ))}
               </select>

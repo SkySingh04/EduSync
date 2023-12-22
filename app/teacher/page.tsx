@@ -105,57 +105,6 @@ const Teacher = () => {
     }
   }
 
-  // async function handleButtonClick() {
-  //   if (selectedStudent && selectedTeacher && day && time) {
-  //     const selectedSlot = `${day}-${time}`;
-  //     console.log(selectedSlot);
-  //     const timeslotRef = doc(db, "timeslots", selectedSlot);
-
-  //     try {
-  //       const studentRef = doc(db, "users", selectedStudent);
-  //       const teacherRef = doc(db, "users", selectedTeacher);
-
-  //       const studentDoc = await getDoc(studentRef);
-  //       const teacherDoc = await getDoc(teacherRef);
-  //       console.log(studentDoc.data());
-  //       console.log(teacherDoc.data());
-
-  //       if (studentDoc.exists() && teacherDoc.exists()) {
-  //         const studentData = studentDoc.data();
-  //         const teacherData = teacherDoc.data();
-
-  //         const data = {
-  //           createdAt: serverTimestamp(),
-  //           day,
-  //           students: [
-  //             {
-  //               name: studentData.displayName,
-  //               studentId: selectedStudent,
-  //               subject: "maths", // You might retrieve this data from somewhere
-  //             },
-  //           ],
-  //           teachers: [
-  //             {
-  //               name: teacherData.displayName,
-  //               teacherId: selectedTeacher,
-  //             },
-  //           ],
-  //           time,
-  //         };
-
-  //         await setDoc(timeslotRef, data, { merge: true });
-  //         console.log("Timeslot updated successfully!");
-  //         setShowUserList(false);
-  //       } else {
-  //         console.error("Student or teacher document does not exist.");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error updating timeslot:", error);
-  //     }
-  //   } else {
-  //     console.error("Please select student, teacher, and slot.");
-  //   }
-  // }
 
   const fetchSlotsData = async () => {
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -224,27 +173,29 @@ const Teacher = () => {
                 {/* Display teachers and students in the slot */}
                 <div>
                   <h3 className="text-lg font-semibold">Teachers:</h3>
-                  <ul>
+                  <ol>
                     {slotData[`${day}-${time}`]?.teachers?.map(
                       (teacher: Teacher, index) => (
                         <li key={index}>
-                          {teacher.name} - {teacher.subject}
+                        {index + 1} : {teacher.name}
                         </li>
                       )
                     )}
-                  </ul>
+                  </ol>
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold">Students:</h3>
-                  <ul>
+                  <ol>
                     {slotData[`${day}-${time}`]?.students?.map(
                       (student: Student, index) => (
                         <li key={index}>
-                          {student.name} - {student.subject}
+                        {index +1} :   {student.name}
+                        <br />
+                        Subject :<b> {student.subject}</b>
                         </li>
                       )
                     )}
-                  </ul>
+                  </ol>
                   <button
                     onClick={() => handleSlotClick(day, time)}
                     className=" bg-green-400 text-black px-2 py-1 rounded-full"
@@ -266,7 +217,8 @@ const Teacher = () => {
   }
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-4">Teacher Dashboard</h1>
+
       {generateTimeSlots()}
       {/* Show user list popup */}
       {showUserList && (
@@ -299,7 +251,7 @@ const Teacher = () => {
               onClick={handleButtonClick}
               className="bg-blue-500 text-white px-4 py-2 rounded"
             >
-              Select User
+              Schedule Class
             </button>
           </div>
         </div>

@@ -250,7 +250,7 @@ const Admin = () => {
                     onClick={() => handleSlotClick(day, time)}
                     className=" bg-green-400 text-black px-2 py-1 rounded-full"
                   >
-                    Add User
+                    Schedule Class
                   </button>
                 </div>
               </div>

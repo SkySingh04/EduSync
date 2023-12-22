@@ -40,7 +40,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar fixed top-0 w-full z-50 bg-slate-800 text-white">
+    <div className="navbar relative top-0 w-full z-50 bg-slate-800 text-white">
       <div className="navbar-start">
         <a href="/" className="text-lg font-bold p-2">
           ClassSnap {/* Add your logo here */}

@@ -14,6 +14,8 @@ const Admin = () => {
   const [usersList, setUsersList] = useState<any[]>([]); // Assuming your user data structure
   const [selectedStudent, setSelectedStudent] = useState<string>("");
   const [selectedTeacher, setSelectedTeacher] = useState<string>("");
+  const [selectedSubject, setSelectedSubject] = useState<string>("");
+  const subjectList = ['Maths' , 'Science' , 'English' , 'Hindi' , 'Social Science'];
 
   useEffect(() => {
     fetchSlotsData();
@@ -76,7 +78,7 @@ const Admin = () => {
               {
                 name: studentData.displayName,
                 studentId: selectedStudent,
-                subject: "maths", // You might retrieve this data from somewhere
+                subject: selectedSubject, // You might retrieve this data from somewhere
               },
             ],
             teachers: [
@@ -110,57 +112,7 @@ const Admin = () => {
     }
   }
 
-  // async function handleButtonClick() {
-  //   if (selectedStudent && selectedTeacher && day && time) {
-  //     const selectedSlot = `${day}-${time}`;
-  //     console.log(selectedSlot);
-  //     const timeslotRef = doc(db, "timeslots", selectedSlot);
 
-  //     try {
-  //       const studentRef = doc(db, "users", selectedStudent);
-  //       const teacherRef = doc(db, "users", selectedTeacher);
-
-  //       const studentDoc = await getDoc(studentRef);
-  //       const teacherDoc = await getDoc(teacherRef);
-  //       console.log(studentDoc.data());
-  //       console.log(teacherDoc.data());
-
-  //       if (studentDoc.exists() && teacherDoc.exists()) {
-  //         const studentData = studentDoc.data();
-  //         const teacherData = teacherDoc.data();
-
-  //         const data = {
-  //           createdAt: serverTimestamp(),
-  //           day,
-  //           students: [
-  //             {
-  //               name: studentData.displayName,
-  //               studentId: selectedStudent,
-  //               subject: "maths", // You might retrieve this data from somewhere
-  //             },
-  //           ],
-  //           teachers: [
-  //             {
-  //               name: teacherData.displayName,
-  //               teacherId: selectedTeacher,
-  //             },
-  //           ],
-  //           time,
-  //         };
-
-  //         await setDoc(timeslotRef, data, { merge: true });
-  //         console.log("Timeslot updated successfully!");
-  //         setShowUserList(false);
-  //       } else {
-  //         console.error("Student or teacher document does not exist.");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error updating timeslot:", error);
-  //     }
-  //   } else {
-  //     console.error("Please select student, teacher, and slot.");
-  //   }
-  // }
 
   const fetchSlotsData = async () => {
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -275,6 +227,8 @@ const Admin = () => {
     } else if (role === "teacher") {
       setSelectedTeacher(userId);
     }
+    else if (role === "subject") {
+      setSelectedSubject(userId);}
   }
   return (
     <div className="p-8">
@@ -321,6 +275,24 @@ const Admin = () => {
                   .map((teacher, index) => (
                     <option key={index} value={teacher.uid}>
                       {teacher.displayName}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="subjectsDropdown" className="mr-2">
+                Subjects:
+              </label>
+              <select
+                id="subjectsDropdown"
+                onChange={(e) => handleUserSelect("subject", e.target.value)}
+                className="text-white"
+              >
+                <option value="">Select Subject</option>
+                {subjectList
+                  .map((subject, index) => (
+                    <option key={index} value={subject}>
+                      {subject}
                     </option>
                   ))}
               </select>

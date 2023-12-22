@@ -10,6 +10,7 @@ export default function Page() {
   const [teacherID, setTeacherID]: any = React.useState(
     "CHJ3KL849BSFzv3brprJ62gTVF62"
   );
+  const [filename, setfilename]:any = React.useState("")
 
   React.useEffect(() => {
     // Fetch all users from your database here
@@ -62,6 +63,13 @@ export default function Page() {
             </option>
           ))}
       </select>
+      <input
+      placeholder="Enter File name..."
+      onChange={(e)=>setfilename(e.target.value)}
+      className="text-white"
+      
+      
+      />
       <button
         onClick={async () => {
           if (file) {
@@ -82,6 +90,7 @@ export default function Page() {
 
               const documentsCollection = collection(db, "Files");
               const newDocumentRef = await addDoc(documentsCollection, {
+                FileName: filename,
                 FileLink: publicUrl,
                 StudentID: studentId,
                 TeacherID: teacherID,

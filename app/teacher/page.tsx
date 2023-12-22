@@ -5,6 +5,7 @@ import { db } from "../firebase";
 import { collection, getDoc, doc, getDocs, setDoc } from "firebase/firestore";
 import { Day, Time, Teacher, Student, SlotData } from "../types";
 import { serverTimestamp } from "firebase/firestore";
+import PageComponent from "../components/UploadForm";
 const Teacher = () => {
   const [slotData, setSlotData] = useState<SlotData>({});
   const [selectedSlot, setSelectedSlot] = useState<string>("");
@@ -55,7 +56,9 @@ const Teacher = () => {
     Object.keys(slots).forEach((slotKey) => {
       const slot = slots[slotKey];
       const teachers = slot.teachers || [];
-      const teacherExists = teachers.some((teacher: any) => teacher.teacherId === teacherId);
+      const teacherExists = teachers.some(
+        (teacher: any) => teacher.teacherId === teacherId
+      );
 
       if (teacherExists) {
         filteredSlots[slotKey] = slot;
@@ -68,7 +71,7 @@ const Teacher = () => {
     if (selectedStudent && day && time) {
       const selectedSlot = `${day}-${time}`;
       const timeslotRef = doc(db, "timeslots", selectedSlot);
-        const selectedTeacher="CHJ3KL849BSFzv3brprJ62gTVF62"
+      const selectedTeacher = "CHJ3KL849BSFzv3brprJ62gTVF62";
       try {
         const studentRef = doc(db, "users", selectedStudent);
         const teacherRef = doc(db, "users", selectedTeacher);
@@ -77,10 +80,14 @@ const Teacher = () => {
         const teacherDoc = await getDoc(teacherRef);
         console.log(studentDoc.data());
         console.log(teacherDoc.data());
-        if (timeslotDoc.exists() && studentDoc.exists() && teacherDoc.exists()) {
+        if (
+          timeslotDoc.exists() &&
+          studentDoc.exists() &&
+          teacherDoc.exists()
+        ) {
           const existingData = timeslotDoc.data();
-            const studentData = studentDoc.data();
-            const teacherData = teacherDoc.data();
+          const studentData = studentDoc.data();
+          const teacherData = teacherDoc.data();
           const newData = {
             createdAt: serverTimestamp(),
             day,
@@ -122,7 +129,6 @@ const Teacher = () => {
     }
   }
 
-
   const fetchSlotsData = async () => {
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
     const timings = [
@@ -152,7 +158,7 @@ const Teacher = () => {
       }
     }
     const filteredSlots = filterSlotsByTeacher(data, currentUserId);
-    console.log("filteredSlots")
+    console.log("filteredSlots");
     console.log(filteredSlots);
     setSlotData(filteredSlots);
   };
@@ -196,7 +202,7 @@ const Teacher = () => {
                     {slotData[`${day}-${time}`]?.teachers?.map(
                       (teacher: Teacher, index) => (
                         <li key={index}>
-                        {index + 1} : {teacher.name}
+                          {index + 1} : {teacher.name}
                         </li>
                       )
                     )}
@@ -208,9 +214,9 @@ const Teacher = () => {
                     {slotData[`${day}-${time}`]?.students?.map(
                       (student: Student, index) => (
                         <li key={index}>
-                        {index +1} :   {student.name}
-                        <br />
-                        Subject :<b> {student.subject}</b>
+                          {index + 1} : {student.name}
+                          <br />
+                          Subject :<b> {student.subject}</b>
                         </li>
                       )
                     )}
@@ -232,11 +238,28 @@ const Teacher = () => {
   function handleUserSelect(role: string, userId: string) {
     if (role === "student") {
       setSelectedStudent(userId);
-    } 
+    }
   }
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Teacher Dashboard</h1>
+    <div className="">
+      {/* <div className="flex justify-center align-middle">
+        <div className="w-1/2 p-4 align-middle">
+          <h1 className="text-2xl font-bold mb-4">Teacher Dashboard</h1>
+        </div>
+        <div className="w-1/2 p-4">
+          <PageComponent />
+        </div>
+      </div> */}
+
+<div className="flex justify-center items-center">
+  <div className="w-1/2 p-4">
+    <h1 className="text-6xl ml-[95px] font-bold mb-4">Teacher Dashboard</h1>
+  </div>
+  <div className="w-1/2 p-4">
+    <PageComponent />
+  </div>
+</div>
+
 
       {generateTimeSlots()}
       {/* Show user list popup */}

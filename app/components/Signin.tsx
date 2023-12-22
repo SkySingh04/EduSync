@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { auth,db } from '../firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { auth, db } from "../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 function SignInForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
   const [state, setState] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   const handleChange = (evt: any) => {
@@ -23,28 +23,32 @@ function SignInForm() {
 
   const handleLogin = async () => {
     const { email, password } = state;
-  
+
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
-  
+
       // Fetch user document from Firestore based on user.uid
-      const userDocRef = doc(db, 'users', user.uid);
+      const userDocRef = doc(db, "users", user.uid);
       const userDocSnapshot = await getDoc(userDocRef);
-  
+
       if (userDocSnapshot.exists()) {
         const userDoc = userDocSnapshot.data();
-  
+
         // Redirect based on user role
         switch (userDoc.role) {
-          case 'Student':
-            router.push('/studentpage');
+          case "Student":
+            router.push("/studentpage");
             break;
-          case 'Admin':
-            router.push('/adminpage');
+          case "Admin":
+            router.push("/admin");
             break;
-          case 'Teacher':
-            router.push('/teacher');
+          case "Teacher":
+            router.push("/teacher");
             break;
           default:
             // Handle other roles or unexpected values
@@ -52,7 +56,7 @@ function SignInForm() {
         }
       } else {
         // Handle the case where the user document doesn't exist
-        console.error('User document not found.');
+        console.error("User document not found.");
       }
     } catch (error: any) {
       const errorCode = error.code;
@@ -89,9 +93,7 @@ function SignInForm() {
           onChange={handleChange}
         />
         <button className="loginbutton bg-customViolet">Sign In</button>
-        {error && (
-          <p className="text-red-700 border border-black">{error}</p>
-        )}
+        {error && <p className="text-red-700 border border-black">{error}</p>}
       </form>
     </div>
   );

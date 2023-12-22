@@ -72,7 +72,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ onClose }) => {
           className="float-right text-white"
           onClick={onClose}
         >
-          Close
+          X
         </button>
         {messages.map((message, index) => (
           <div key={index} className="mb-2">

@@ -5,7 +5,7 @@ import { db } from "../firebase";
 import { collection, getDoc, doc, getDocs, setDoc } from "firebase/firestore";
 import { Day, Time, Teacher, Student, SlotData } from "../types";
 import { serverTimestamp } from "firebase/firestore";
-const Admin = () => {
+const Teacher = () => {
   const [slotData, setSlotData] = useState<SlotData>({});
   const [selectedSlot, setSelectedSlot] = useState<string>("");
   const [showUserList, setShowUserList] = useState(false);
@@ -13,7 +13,7 @@ const Admin = () => {
   const [time, setTime] = useState<Time>("9:00 AM");
   const [usersList, setUsersList] = useState<any[]>([]); // Assuming your user data structure
   const [selectedStudent, setSelectedStudent] = useState<string>("");
-  const [selectedTeacher, setSelectedTeacher] = useState<string>("");
+  const currentUserId = "CHJ3KL849BSFzv3brprJ62gTVF62";
 
   useEffect(() => {
     fetchSlotsData();
@@ -49,14 +49,26 @@ const Admin = () => {
     console.log(day, time);
     setShowUserList(true);
   };
-  
+  const filterSlotsByTeacher = (slots: SlotData, teacherId: string) => {
+    const filteredSlots: SlotData = {};
 
+    Object.keys(slots).forEach((slotKey) => {
+      const slot = slots[slotKey];
+      const teachers = slot.teachers || [];
+      const teacherExists = teachers.some((teacher: any) => teacher.teacherId === teacherId);
 
+      if (teacherExists) {
+        filteredSlots[slotKey] = slot;
+      }
+    });
+
+    return filteredSlots;
+  };
   async function handleButtonClick() {
-    if (selectedStudent && selectedTeacher && day && time) {
+    if (selectedStudent && day && time) {
       const selectedSlot = `${day}-${time}`;
       const timeslotRef = doc(db, "timeslots", selectedSlot);
-
+        const selectedTeacher="CHJ3KL849BSFzv3brprJ62gTVF62"
       try {
         const studentRef = doc(db, "users", selectedStudent);
         const teacherRef = doc(db, "users", selectedTeacher);
@@ -110,57 +122,6 @@ const Admin = () => {
     }
   }
 
-  // async function handleButtonClick() {
-  //   if (selectedStudent && selectedTeacher && day && time) {
-  //     const selectedSlot = `${day}-${time}`;
-  //     console.log(selectedSlot);
-  //     const timeslotRef = doc(db, "timeslots", selectedSlot);
-
-  //     try {
-  //       const studentRef = doc(db, "users", selectedStudent);
-  //       const teacherRef = doc(db, "users", selectedTeacher);
-
-  //       const studentDoc = await getDoc(studentRef);
-  //       const teacherDoc = await getDoc(teacherRef);
-  //       console.log(studentDoc.data());
-  //       console.log(teacherDoc.data());
-
-  //       if (studentDoc.exists() && teacherDoc.exists()) {
-  //         const studentData = studentDoc.data();
-  //         const teacherData = teacherDoc.data();
-
-  //         const data = {
-  //           createdAt: serverTimestamp(),
-  //           day,
-  //           students: [
-  //             {
-  //               name: studentData.displayName,
-  //               studentId: selectedStudent,
-  //               subject: "maths", // You might retrieve this data from somewhere
-  //             },
-  //           ],
-  //           teachers: [
-  //             {
-  //               name: teacherData.displayName,
-  //               teacherId: selectedTeacher,
-  //             },
-  //           ],
-  //           time,
-  //         };
-
-  //         await setDoc(timeslotRef, data, { merge: true });
-  //         console.log("Timeslot updated successfully!");
-  //         setShowUserList(false);
-  //       } else {
-  //         console.error("Student or teacher document does not exist.");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error updating timeslot:", error);
-  //     }
-  //   } else {
-  //     console.error("Please select student, teacher, and slot.");
-  //   }
-  // }
 
   const fetchSlotsData = async () => {
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -182,10 +143,7 @@ const Admin = () => {
         const timeslotRef = doc(db, "timeslots", `${day}-${time}`);
         const timeslotDoc = await getDoc(timeslotRef);
 
-        if (timeslotDoc.exists())
-
-
-         {
+        if (timeslotDoc.exists()) {
           const { teachers, students } = timeslotDoc.data();
           data[`${day}-${time}`] = { teachers, students };
         } else {
@@ -193,8 +151,10 @@ const Admin = () => {
         }
       }
     }
-
-    setSlotData(data);
+    const filteredSlots = filterSlotsByTeacher(data, currentUserId);
+    console.log("filteredSlots")
+    console.log(filteredSlots);
+    setSlotData(filteredSlots);
   };
 
   const generateTimeSlots = () => {
@@ -232,19 +192,19 @@ const Admin = () => {
                 {/* Display teachers and students in the slot */}
                 <div>
                   <h3 className="text-lg font-semibold">Teachers:</h3>
-                  <ul>
+                  <ol>
                     {slotData[`${day}-${time}`]?.teachers?.map(
                       (teacher: Teacher, index) => (
                         <li key={index}>
-                          {index + 1} : {teacher.name}
+                        {index + 1} : {teacher.name}
                         </li>
                       )
                     )}
-                  </ul>
+                  </ol>
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold">Students:</h3>
-                  <ul>
+                  <ol>
                     {slotData[`${day}-${time}`]?.students?.map(
                       (student: Student, index) => (
                         <li key={index}>
@@ -254,12 +214,12 @@ const Admin = () => {
                         </li>
                       )
                     )}
-                  </ul>
+                  </ol>
                   <button
                     onClick={() => handleSlotClick(day, time)}
                     className=" bg-green-400 text-black px-2 py-1 rounded-full"
                   >
-                    Schedule Class
+                    Add Class
                   </button>
                 </div>
               </div>
@@ -272,13 +232,12 @@ const Admin = () => {
   function handleUserSelect(role: string, userId: string) {
     if (role === "student") {
       setSelectedStudent(userId);
-    } else if (role === "teacher") {
-      setSelectedTeacher(userId);
-    }
+    } 
   }
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-4">Teacher Dashboard</h1>
+
       {generateTimeSlots()}
       {/* Show user list popup */}
       {showUserList && (
@@ -306,31 +265,12 @@ const Admin = () => {
               </select>
             </div>
             {/* Dropdown for selecting teachers */}
-            <div className="mb-4">
-              <label htmlFor="teachersDropdown" className="mr-2">
-                Teachers:
-              </label>
-              <select
-                id="teachersDropdown"
-                onChange={(e) => handleUserSelect("teacher", e.target.value)}
-                className="text-white"
-              >
-                <option value="">Select Teacher</option>
-                {usersList
-                  .filter((user) => user.role === "Teacher")
-                  .map((teacher, index) => (
-                    <option key={index} value={teacher.uid}>
-                      {teacher.displayName}
-                    </option>
-                  ))}
-              </select>
-            </div>
             {/* Button to trigger onClick function */}
             <button
               onClick={handleButtonClick}
               className="bg-blue-500 text-white px-4 py-2 rounded"
             >
-              Select User
+              Schedule Class
             </button>
           </div>
         </div>
@@ -339,5 +279,32 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default Teacher;
 
+// const createAllTimeSlots = async () => {
+//   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+//   const timings = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'];
+
+// //   const timeslotsRef = collection(db, 'timeslots');
+
+//   for (const day of days) {
+//     for (const time of timings) {
+
+//         const docRef = await getDocs(collection(db, 'timeslots'))
+//         docRef.forEach((doc:any) => {
+//             console.log(`${doc.id} => ${doc.data()}`);
+//           });
+//       const data = {
+//         day,
+//         time,
+//         teachers: [],
+//         students: [],
+//         createdAt: Timestamp.now(), // Optionally include a createdAt timestamp
+//       };
+
+//       await setDoc(doc(db, 'timeslots', `${day}-${time}`), data);
+//     }
+//   }
+
+//   console.log('All timeslots created!');
+// };

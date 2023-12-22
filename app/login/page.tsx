@@ -1,7 +1,8 @@
-'use client';
+"use client";
 import React, { useState } from "react";
 import SignInForm from "../components/Signin";
 import SignUpForm from "../components/Signup";
+import {auth} from '../firebase';
 export default function App() {
   const [type, setType] = useState("signIn");
   const handleOnClick = (text : any) => {
@@ -34,6 +35,7 @@ export default function App() {
             </div>
             <div className="overlay-panel overlay-right">
               <h1>Hello, Friend!</h1>
+
               <p>Enter your personal details and start journey with us</p>
               <button
                 className="ghost  loginbutton"

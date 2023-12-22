@@ -94,6 +94,7 @@ const Teacher = () => {
           await setDoc(timeslotRef, updatedData);
           console.log("Timeslot updated successfully!");
           setShowUserList(false);
+          window.location.reload();
         } else {
           console.error("Timeslot does not exist.");
         }

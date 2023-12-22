@@ -95,6 +95,7 @@ const Admin = () => {
           await setDoc(timeslotRef, updatedData);
           console.log("Timeslot updated successfully!");
           setShowUserList(false);
+          window.location.reload();
         } else {
           console.error("Timeslot does not exist.");
         }
@@ -229,7 +230,7 @@ const Admin = () => {
                     {slotData[`${day}-${time}`]?.teachers?.map(
                       (teacher: Teacher, index) => (
                         <li key={index}>
-                          {teacher.name} - {teacher.subject}
+                          {index + 1} : {teacher.name}
                         </li>
                       )
                     )}
@@ -241,7 +242,9 @@ const Admin = () => {
                     {slotData[`${day}-${time}`]?.students?.map(
                       (student: Student, index) => (
                         <li key={index}>
-                          {student.name} - {student.subject}
+                        {index +1} :   {student.name}
+                        <br />
+                        Subject :<b> {student.subject}</b>
                         </li>
                       )
                     )}

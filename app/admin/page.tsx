@@ -49,6 +49,9 @@ const Admin = () => {
     console.log(day, time);
     setShowUserList(true);
   };
+  
+
+
   async function handleButtonClick() {
     if (selectedStudent && selectedTeacher && day && time) {
       const selectedSlot = `${day}-${time}`;
@@ -335,30 +338,3 @@ const Admin = () => {
 
 export default Admin;
 
-// const createAllTimeSlots = async () => {
-//   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-//   const timings = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'];
-
-// //   const timeslotsRef = collection(db, 'timeslots');
-
-//   for (const day of days) {
-//     for (const time of timings) {
-
-//         const docRef = await getDocs(collection(db, 'timeslots'))
-//         docRef.forEach((doc:any) => {
-//             console.log(`${doc.id} => ${doc.data()}`);
-//           });
-//       const data = {
-//         day,
-//         time,
-//         teachers: [],
-//         students: [],
-//         createdAt: Timestamp.now(), // Optionally include a createdAt timestamp
-//       };
-
-//       await setDoc(doc(db, 'timeslots', `${day}-${time}`), data);
-//     }
-//   }
-
-//   console.log('All timeslots created!');
-// };

@@ -13,6 +13,7 @@ const Teacher = () => {
   const [time, setTime] = useState<Time>("9:00 AM");
   const [usersList, setUsersList] = useState<any[]>([]); // Assuming your user data structure
   const [selectedStudent, setSelectedStudent] = useState<string>("");
+  const currentUserId = "CHJ3KL849BSFzv3brprJ62gTVF62";
 
   useEffect(() => {
     fetchSlotsData();
@@ -47,6 +48,21 @@ const Teacher = () => {
     console.log(selectedSlot);
     console.log(day, time);
     setShowUserList(true);
+  };
+  const filterSlotsByTeacher = (slots: SlotData, teacherId: string) => {
+    const filteredSlots: SlotData = {};
+
+    Object.keys(slots).forEach((slotKey) => {
+      const slot = slots[slotKey];
+      const teachers = slot.teachers || [];
+      const teacherExists = teachers.some((teacher: any) => teacher.teacherId === teacherId);
+
+      if (teacherExists) {
+        filteredSlots[slotKey] = slot;
+      }
+    });
+
+    return filteredSlots;
   };
   async function handleButtonClick() {
     if (selectedStudent && day && time) {
@@ -135,8 +151,10 @@ const Teacher = () => {
         }
       }
     }
-
-    setSlotData(data);
+    const filteredSlots = filterSlotsByTeacher(data, currentUserId);
+    console.log("filteredSlots")
+    console.log(filteredSlots);
+    setSlotData(filteredSlots);
   };
 
   const generateTimeSlots = () => {

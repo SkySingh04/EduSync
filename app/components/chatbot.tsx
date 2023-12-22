@@ -41,9 +41,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ onClose }) => {
     try {
       // Make a GET request to the specified URL with query parameters
       const userId = "tPAS3CycNiaMHk8DB6YvsBuClSA3"; // Replace with your user ID
-      const queryParams = new URLSearchParams({ tag: newMessage, id: userId });
-  
-      const response = await fetch(`https://7638-34-70-22-243.ngrok-free.app?${queryParams}`);
+      console.log(newMessage)
+      const response = await fetch(`https://1b1b-34-70-22-243.ngrok-free.app?$tag=${newMessage}&id=${userId}`);
       if (response.ok) {
         const responseData = await response.json();
         // Render the response message from the API

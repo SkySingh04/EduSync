@@ -74,10 +74,10 @@ function SignInForm() {
 
   return (
     <div className="form-container sign-in-container">
-      <form onSubmit={handleSubmit} className="loginform bg-customBlue">
+      <form onSubmit={handleSubmit} className="loginform bg-customBlue ">
         <h1>Sign in</h1>
         <input
-          className="bg-customBeige text-white"
+          className="bg-customBeige text-black"
           type="email"
           placeholder="Email"
           name="email"
@@ -85,7 +85,7 @@ function SignInForm() {
           onChange={handleChange}
         />
         <input
-          className="bg-customBeige text-white"
+          className="bg-customBeige text-black"
           type="password"
           name="password"
           placeholder="Password"

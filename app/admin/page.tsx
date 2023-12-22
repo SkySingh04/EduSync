@@ -5,7 +5,10 @@ import { db } from "../firebase";
 import { collection, getDoc, doc, getDocs, setDoc } from "firebase/firestore";
 import { Day, Time, Teacher, Student, SlotData } from "../types";
 import { serverTimestamp } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/navigation";
 const Admin = () => {
+  
   const [slotData, setSlotData] = useState<SlotData>({});
   const [selectedSlot, setSelectedSlot] = useState<string>("");
   const [showUserList, setShowUserList] = useState(false);
@@ -16,6 +19,30 @@ const Admin = () => {
   const [selectedTeacher, setSelectedTeacher] = useState<string>("");
   const [selectedSubject, setSelectedSubject] = useState<string>("");
   const subjectList = ['Maths' , 'Science' , 'English' , 'Hindi' , 'Social Science'];
+  const router = useRouter();
+  const [userId, setUserId] = useState<string>("");
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const uid = user.uid;
+      setUserId(uid);
+      const userRef = doc(db, "users", uid);
+        const userDoc = getDoc(userRef).then((doc) => {
+          if (doc.exists()) { 
+            console.log("Document data:", doc.data());
+            if(doc.data()?.role!=="Admin" ){
+              router.push("/login")
+            }
+          }
+        }
+        ).catch((error) => {
+          console.log("Error getting document:", error);
+        });
+    } else {
+      router.push("/login")
+    }
+  });
+
 
   useEffect(() => {
     fetchSlotsData();

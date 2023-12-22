@@ -11,12 +11,41 @@ import {
 } from "firebase/firestore";
 import { Day, Time } from "../types";
 import UploadedFilesList from "../components/files";
+import { useRouter } from "next/navigation";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 
 const Page = () => {
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [studentTimetable, setStudentTimetable] = useState<any>([]);
+   const [userId, setUserId] = useState<string>("");
+   const router = useRouter();
+
   // Assume you have a way to get the currently logged-in user's ID
-  const loggedInUserId = "tPAS3CycNiaMHk8DB6YvsBuClSA3"; // Replace this with actual logged-in user ID
+  const loggedInUserId = userId // Replace this with actual logged-in user ID
+  console.log(userId)
+
+  const auth = getAuth();
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const uid = user.uid;
+    setUserId(uid);
+    const userRef = doc(db, "users", uid);
+      const userDoc = getDoc(userRef).then((doc) => {
+        if (doc.exists()) { 
+          console.log("Document data:", doc.data());
+          if(doc.data()?.role!=="Student" ){
+            router.push("/login")
+          }
+        }
+      }
+      ).catch((error) => {
+        console.log("Error getting document:", error);
+      });
+  } else {
+    router.push("/login")
+  }
+});
 
   useEffect(() => {
     fetchUserTimetable(loggedInUserId);

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useEdgeStore } from "../lib/edgestore";
 import { db } from "../firebase";
 import { getDocs, addDoc, collection, DocumentData } from "firebase/firestore";
-
+import callAPI from "../emailapi";
 interface User {
   uid: string;
   displayName: string;
@@ -92,6 +92,7 @@ export default function PageComponent() {
                   uploadedTime: new Date(),
                 });
                 console.log("successfull")
+                callAPI(studentId,"Your teacher has uploaded a file for you. Please check your account. The file name is " + filename + "." + " You can download it from here: " + publicUrl);
               } catch (error) {
                 console.error("Error uploading file:", error);
               }

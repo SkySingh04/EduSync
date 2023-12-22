@@ -11,6 +11,8 @@
   "dependencies": {
     "@cloudinary/react": "^1.11.2",
     "@cloudinary/url-gen": "^1.14.0",
+    "@edgestore/react": "^0.1.4",
+    "@edgestore/server": "^0.1.4",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.1",
@@ -24,7 +26,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-firebase-hooks": "^5.1.1",
-    "react-router-dom": "^6.21.1"
+    "react-router-dom": "^6.21.1",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20",

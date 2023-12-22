@@ -1,94 +1,111 @@
-// import axios from 'axios';
+"use client";
+import * as React from "react";
+import { useEdgeStore } from "../lib/edgestore";
+import { db } from "../firebase";
+import { getDocs, addDoc, collection } from "firebase/firestore";
 
-// // Replace YOUR_CLOUD_NAME with your Cloudinary cloud name
+export default function Page() {
+  const [userList, setUsersList]: any = React.useState([]);
+  const [studentId, setStudentId]: any = React.useState("");
+  const [teacherID, setTeacherID]: any = React.useState(
+    "CHJ3KL849BSFzv3brprJ62gTVF62"
+  );
 
-// // async function uploadPdfToCloudinary(pdfFile: File) {
-// //   // Generate a timestamp in seconds
+  React.useEffect(() => {
+    // Fetch all users from your database here
+    // Replace this with your actual database call to get users with roles
+    const fetchUsers = async () => {
+      const userRef = collection(db, "users");
+      const userDoc = await getDocs(userRef);
+      const userData: any = [];
+      userDoc.forEach((doc) => {
+        userData.push(doc.data());
+      });
+      console.log(userData);
+      const something: any = userData.filter(
+        (user: any) => user.role === "Teacher"
+      );
+      console.log(something);
+      setUsersList(userData);
+    };
 
-// // }
+    fetchUsers();
+  }, []);
 
-// // Example usage:
-// // const pdfFile = /* Get the PDF file to upload */;
-// // uploadPdfToCloudinary(pdfFile);
+  function handleUserSelect(role: string, userId: string) {
+    setStudentId(userId);
+  }
 
-// "use client";
+  const [file, setFile] = React.useState<File>();
+  const { edgestore } = useEdgeStore();
+  const [downloadLink, setDownloadLink] = React.useState<string | null>(null);
 
+  return (
+    <div>
+      <input
+        type="file"
+        onChange={(e) => {
+          setFile(e.target.files?.[0]);
+        }}
+      />
+      <select
+        id="studentsDropdown"
+        onChange={(e) => handleUserSelect("student", e.target.value)}
+        className="text-white"
+      >
+        <option value="">Select Student</option>
+        {userList
+          .filter((user: any) => user.role === "Student")
+          .map((student: any, index: any) => (
+            <option key={index} value={student.uid}>
+              {student.displayName}
+            </option>
+          ))}
+      </select>
+      <button
+        onClick={async () => {
+          if (file) {
+            try {
+              const res = await edgestore.publicFiles.upload({
+                file,
+                onProgressChange: (progress) => {
+                  // you can use this to show a progress bar
+                  console.log(progress);
+                },
+              });
 
+              // Assuming `res` contains the URL or path in the `url` property
+              const publicUrl = res.url;
 
+              // Set the download link
+              setDownloadLink(publicUrl);
 
+              const documentsCollection = collection(db, "Files");
+              const newDocumentRef = await addDoc(documentsCollection, {
+                FileLink: publicUrl,
+                StudentID: studentId,
+                TeacherID: teacherID,
 
+                uploadedTime: new Date(),
+                // Add other relevant information here
+              });
+            } catch (error) {
+              console.error("Error uploading file:", error);
+            }
+          }
+        }}
+      >
+        Upload
+      </button>
 
-
-
-// import React, { useRef } from 'react';
-
-// const UploadButton: React.FC = () => {
-//  const cloudinaryUploadUrl = 'https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/pdf/upload'; 
-//   const fileInputRef = useRef<HTMLInputElement>(null);
-
-//   const handleFileChange = () => {
-//     if (fileInputRef.current?.files) {
-//       const pdfFile = fileInputRef.current.files[0];
-//       uploadPdfToCloudinary(pdfFile);
-//     }
-//   };
-
-//   const uploadPdfToCloudinary = async (pdfFile: File) => {
-//     // Your upload logic here (reuse the code from the previous example)
-//     const timestamp = Math.floor(Date.now() / 1000);
-
-//     // Replace with your Cloudinary API key and API secret
-//     const apiKey = 'process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY';
-//     const apiSecret = 'process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET';
-  
-//     // Construct the signature
-//     const signature = generateSignature(timestamp, apiSecret);
-  
-//     // Create form data for the POST request
-//     const formData = new FormData();
-//     formData.append('file', pdfFile);
-//     formData.append('api_key', apiKey);
-//     formData.append('timestamp', timestamp.toString());
-//     formData.append('signature', signature);
-  
-//     try {
-//       // Make the authenticated POST request to Cloudinary
-//       const response = await axios.post(cloudinaryUploadUrl, formData, {
-//         headers: {
-//           'Content-Type': 'multipart/form-data',
-//         },
-//       });
-  
-//       // Handle the response from Cloudinary
-//       console.log('Upload successful:', response.data);
-//     } catch (error:any) {
-//       console.error('Error uploading to Cloudinary:', error.message);
-//     }
-//   }
-  
-//   function generateSignature(timestamp: number, apiSecret: string): string {
-//     // Construct the string to sign
-//     const signaturePayload = `timestamp=${timestamp}${apiSecret}`;
-  
-//     // Use a cryptographic library or function to generate the signature (e.g., HMAC-SHA256)
-//     // Replace the following line with the actual signature generation logic
-//     const signature = /* Generate the signature using HMAC-SHA256 or another secure method */ '';
-  
-//     return signature;
-//   };
-
-//   return (
-//     <div>
-//       <input
-//         type="file"
-//         accept=".pdf"
-//         ref={fileInputRef}
-//         onChange={handleFileChange}
-//       />
-//       <button onClick={() => fileInputRef.current?.click()}>Upload PDF</button>
-//     </div>
-//   );
-// };
-
-// export default UploadButton;
-
+      {downloadLink && (
+        <div>
+          <p>Download Link:</p>
+          <a href={downloadLink} download="filename.pdf">
+            Download File
+          </a>
+        </div>
+      )}
+    </div>
+  );
+}

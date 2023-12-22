@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import { EdgeStoreProvider } from '../app/lib/edgestore';
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ChatWindow from "./components/chatbot";
@@ -21,7 +22,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={poppins.className}>
         <Navbar />
-        {children}
+        <EdgeStoreProvider>{children}</EdgeStoreProvider>
+        
 
         <ChatBotButton />
         <Footer />

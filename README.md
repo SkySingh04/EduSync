@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ClassSnap
 
-## Getting Started
+An innovative web application redefining One-to-One online tutoring.
 
-First, run the development server:
+## Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Seamless Ingress Experience (REQ_001_Login):
+-Effortless navigation for students to peruse and join their class particulars.
+-Tutors wield facile access to class intricacies, seamlessly initiating scholarly sessions.
+### Cogitative Class Scheduler (REQ_002_Class Scheduler):
+-Intuitive interface empowering students and tutors to delineate preferred temporal epochs.
+-Autonomous generation and dissemination of class calendars, a sublime amalgamation of convenience and precision.
+### Attendance Ascertainment (REQ_003_Attendance Capturing):
+-Impeccable feature for the scrupulous recording of attendance during each scholarly convocation.
+-Aegis of a fortified database, diligently preserving attendance archives for prospective reference.
+### Data Prowess (REQ_004_Data Management):
+-Implementation of a state-of-the-art database system, a paragon of information virtuosity.
+-Repository for all scholastic occurrences, including schedules and assiduously cataloged attendance records, laying the foundation for erudite report generation.
+### Punctilious Alert Propagation (REQ_005_Alert System):
+-Punctilious alerts for students, ushering them into the auspices of class initiation.
+-Timely notifications for tutors, serving as heralds of impending scholarly engagements.
+-Dissemination of progress reports, invoices, and attendance dossiers to discerning parental cognizance.
+### Document Emissary Interface (REQ_006_Document Upload):
+-An aesthetically pleasing interface for the dispensation of assignments and erudite paraphernalia.
+-Automatic missives to students upon document dispensation, ensconcing the transaction seamlessly within the database echelon.
+### NLP-Pinnacle Chatbot (REQ_007_NLP Chatbot):
+-NLP eminence enabling students to elegantly requisition class timetables, annul engagements, and seek elucidation on class schedules.
+-A symphony of NLP prowess harmonizing with tutors' requisitions for class timetables, engagement cancellations, and schedule clarifications.
+### Erudition Synthesis: Report Compilation (REQ_008_Report Generation):
+-A symphony of functionality materializes in the synthesis of expansive and meticulous reports.
+-Ubiquitous accessibility, ensuring stakeholders' enlightenment through the efficacious dispersion of insightful reports
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- **Frontend:** Next.js
+- **Backend:** Flask
+- **Database:** Firebase (Firestore, Realtime Database)
+- **Edge Store:** EdgeStore
+- **AI Models:** Falcon 7B LLM Models
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
+This project is licensed under the [MIT License].
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contributors
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Abhyuday Hari Prasad (@abhyudayhari)
+- Bhuvan M (@bhuvanmdev)
+- Pritish Patra (@pritish0666)

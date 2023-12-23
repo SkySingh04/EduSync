@@ -34,7 +34,7 @@ const Teacher = () => {
   const router = useRouter();
   const [userId, setUserId] = useState<string>("");
   console.log(userId);
-  const currentUserId = "CHJ3KL849BSFzv3brprJ62gTVF62";
+  const currentUserId = "rE1uFj99RNVkFoGSrdE97RikP5b2";
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
     if (user) {

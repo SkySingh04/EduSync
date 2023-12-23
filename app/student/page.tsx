@@ -9,45 +9,69 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { setDoc } from "firebase/firestore";
 import { Day, Time } from "../types";
 import UploadedFilesList from "../components/files";
 import { useRouter } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-
+import { updateDoc, arrayUnion } from "firebase/firestore";
+import next from "next";
 
 const Page = () => {
+  const [selectedStudent, setSelectedStudent] = useState<string>("");
+
+  const attendanceMarker = async (day: string, time: string) => {
+    try {
+      const attendanceDocRef = doc(db, "attendance", `${day}-${time}`);
+      
+      // Update the attendance array to include the user's ID or any marker
+      await updateDoc(attendanceDocRef, {
+        studentId: arrayUnion(userId), // You can use a user ID or any marker
+        attendance:"Yes"
+      });
   
-  const [URL,setURL]=useState("https://meet.google.com/icy-vveg-aew")
+      console.log("Attendance marked successfully");
+    } catch (error) {
+      console.error("Error marking attendance:", error);
+    }
+  };
+
+  
+
+  const [URL, setURL] = useState("https://meet.google.com/icy-vveg-aew");
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [studentTimetable, setStudentTimetable] = useState<any>([]);
-   const [userId, setUserId] = useState<string>("");
-   const router = useRouter();
+  const [userId, setUserId] = useState<string>("");
+  const router = useRouter();
 
   // Assume you have a way to get the currently logged-in user's ID
-  const loggedInUserId = userId // Replace this with actual logged-in user ID
-  console.log(userId)
+  const loggedInUserId = userId;
+
+  // Replace this with actual logged-in user ID
+  console.log(userId);
 
   const auth = getAuth();
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    const uid = user.uid;
-    setUserId(uid);
-    const userRef = doc(db, "users", uid);
-      const userDoc = getDoc(userRef).then((doc) => {
-        if (doc.exists()) { 
-          console.log("Document data:", doc.data());
-          if(doc.data()?.role!=="Student" ){
-            router.push("/login")
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const uid = user.uid;
+      setUserId(uid);
+      const userRef = doc(db, "users", uid);
+      const userDoc = getDoc(userRef)
+        .then((doc) => {
+          if (doc.exists()) {
+            console.log("Document data:", doc.data());
+            if (doc.data()?.role !== "Student") {
+              router.push("/login");
+            }
           }
-        }
-      }
-      ).catch((error) => {
-        console.log("Error getting document:", error);
-      });
-  } else {
-    router.push("/login")
-  }
-});
+        })
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
+    } else {
+      router.push("/login");
+    }
+  });
 
   useEffect(() => {
     fetchUserTimetable(loggedInUserId);
@@ -126,11 +150,12 @@ onAuthStateChanged(auth, (user) => {
                       <p>Name: {student.name}</p>
                       <p>Subject: {student.subject}</p>
                       <p>Teacher:{student.teacherName}</p>
-                      <p><a 
-                      className="text-blue-600 link-secondary" 
 
-                      
-                      href={URL}>Class Link</a></p>
+                      <button onClick={() => attendanceMarker(entry.day, entry.time)}>
+                        <a className="text-blue-600 link-secondary" href={URL}>
+                          Class Link
+                        </a>
+                      </button>
                       {/* Add more details as needed */}
                     </div>
                   ))
@@ -156,23 +181,24 @@ onAuthStateChanged(auth, (user) => {
 };
 
 export default Page;
-  // const createAllTimeSlots = async () => {
-  // const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-  // const timings = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'];
-  // for (const day of days) {
-  //   for (const time of timings) {
+//
+// const createAllTimeSlots = async () => {
+// const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+// const timings = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'];
+// for (const day of days) {
+//   for (const time of timings) {
 
-  //       const docRef = await getDocs(collection(db, 'attendance'))
-  //       docRef.forEach((doc:any) => {
-  //           console.log(`${doc.id} => ${doc.data()}`);
-  //         });
-  //     const data = {
-  //       attendance: [],
-  //       "day-time" : `${day}-${time}`,
-  //     };
+//       const docRef = await getDocs(collection(db, 'attendance'))
+//       docRef.forEach((doc:any) => {
+//           console.log(`${doc.id} => ${doc.data()}`);
+//         });
+//     const data = {
+//       attendance: [],
+//       "day-time" : `${day}-${time}`,
+//     };
 
-  //     await setDoc(doc(db, 'attendance', `${day}-${time}`), data);
-  //   }
-  // }
+//     await setDoc(doc(db, 'attendance', `${day}-${time}`), data);
+//   }
+// }
 
-  // console.log('All timeslots created!');};
+// console.log('All timeslots created!');};

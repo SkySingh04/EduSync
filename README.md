@@ -1,6 +1,6 @@
 # ClassSnap
 
-An innovative web application redefining One-to-One online tutoring.
+ClassSnap v2 is an innovative tutoring platform developed using Next.js, Firebase, TypeScript, and EdgeStore. It offers personalized and dynamic tutoring experiences with cutting-edge features like Falcon 7B-powered natural language processing incorporated into an NLP Chatbot. The backend, built with Flask and EdgeStore, ensures scalability, optimized data storage, and secure user authentication. This repository reflects a robust tech stack, enabling a seamless blend of frontend and backend technologies to deliver an agile and tailored tutoring solution.
 
 ## Key Features
 

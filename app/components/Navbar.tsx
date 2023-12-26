@@ -43,7 +43,7 @@ const Navbar = () => {
     <div className="navbar  relative top-0 w-full z-50 bg-slate-800 text-white">
       <div className="navbar-start">
         <a href="/" className="text-2xl font-bold p-2">
-          ClassSnap {/* Add your logo here */}
+          EduSync {/* Add your logo here */}
         </a>
       </div>
       <div className="navbar-end text-center">

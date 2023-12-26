@@ -9,8 +9,8 @@ import ChatBotButton from "./components/chatbutton";
 const poppins = Poppins({ weight: "400", subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: "ClassSnap",
-  description: "ClassSnap is the way to go for all your class needs.",
+  title: "EduSync",
+  description: "EduSync is the way to go for all your class needs.",
 };
 
 export default function RootLayout({

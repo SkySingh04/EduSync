@@ -85,5 +85,10 @@ c. Run the Flask Server:
 d. Access the Flask App:
 - Once the server starts, open a web browser and navigate to `http://127.0.0.1:5000/` or `http://localhost:5000/` to see your Flask app running locally.
 
+## Questions or Need Help?
+
+If you have any questions or need further assistance, feel free to open an issue or reach out to [Akash-Singh04](https://github.com/Akash-Singh04).
+
+We appreciate your contributions and look forward to your involvement in improving Motion-Amplification-Video!
 
 # Please view the list of open issues at [Issues](https://github.com/Akash-Singh04/EduSync/issues). Any contributions to them are welcome.

@@ -2,6 +2,17 @@
 
 EduSync is an innovative tutoring platform developed using Next.js, Firebase, TypeScript, and EdgeStore. It offers personalized and dynamic tutoring experiences with cutting-edge features like Falcon 7B-powered natural language processing incorporated into an NLP Chatbot. The backend, built with Flask and EdgeStore, ensures scalability, optimized data storage, and secure user authentication. This repository reflects a robust tech stack, enabling a seamless blend of frontend and backend technologies to deliver an agile and tailored tutoring solution.
 
+## Contributing
+
+- Please check the [Contributions](https://github.com/Akash-Singh04/QuizQuest/blob/master/CONTRIBUTING) file for instructions on how to get started with the project on your local system
+- Contributions are welcome! Feel free to fork the repository, make improvements, and create pull requests.
+- Please view the list of open issues at [Issues](https://github.com/Akash-Singh04/QuizQuest/issues). Any contributions to them are welcome.
+
+## Deployment
+
+The live deployment of QuizQuest can be accessed at [EduSync](https://edu-sync-phi.vercel.app/).
+
+
 ## Key Features
 
 ### Seamless Ingress Experience (REQ_001_Login):
@@ -41,10 +52,10 @@ EduSync is an innovative tutoring platform developed using Next.js, Firebase, Ty
 
 ## License
 
-This project is licensed under the [MIT License].
+This project is licensed under the [MIT License](LICENSE).
 
 ## Contributors
-
-- Abhyuday Hari Prasad (@abhyudayhari)
-- Bhuvan M (@bhuvanmdev)
-- Pritish Patra (@pritish0666)
+- [**Akash Singh**](https://github.com/Akash-Singh04)
+- [Abhyuday Hari Prasad](https://github.com/abhyudayhari)
+- [Bhuvan M](https://github.com/@bhuvanmdev)
+- [Pritish Patra](https://github.com/pritish0666)

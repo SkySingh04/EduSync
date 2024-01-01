@@ -11,7 +11,16 @@ EduSync is an innovative tutoring platform developed using Next.js, Firebase, Ty
 ## Deployment
 
 The live deployment of QuizQuest can be accessed at [EduSync](https://edu-sync-phi.vercel.app/).
-
+Test Credentials:
+Admin:
+testadmin@gmail.com 
+123456  
+Student:
+teststudent@gmail.com 
+123456
+Teacher:
+testteacher4@gmail.com 
+123456a
 
 ## Key Features
 

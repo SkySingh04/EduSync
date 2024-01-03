@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
+import toast from "react-hot-toast";
 interface UploadedFilesListProps {
   userId: string;
 }
@@ -35,6 +36,7 @@ console.log(allFiles)
       
     } catch (error) {
       console.error("Error fetching all files:", error);
+      toast.error("No files found");
     }
   };
 
@@ -53,7 +55,6 @@ console.log(allFiles)
             Download File
           </a>
         </div>
-        {/* Add more file details as needed */}
       </div>
     ))
   ) : (

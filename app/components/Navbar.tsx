@@ -4,6 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import {auth} from '../firebase';
 import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
   const [user, setUser] = useState(null); // Use state to track the user's authentication state
@@ -26,6 +27,7 @@ const Navbar = () => {
     signOut(auth).then(() => {
       // Sign-out successful.
       console.log("Sign out successful");
+      toast.success("Signed out successfully");
       router.push(`/`);
 
     }).catch((error) => {

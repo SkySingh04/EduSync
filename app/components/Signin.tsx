@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { auth, db } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import toast from "react-hot-toast";
 
 function SignInForm() {
   const router = useRouter();
@@ -54,6 +55,7 @@ function SignInForm() {
             // Handle other roles or unexpected values
             break;
         }
+        toast.success("Logged in successfully");
       } else {
         // Handle the case where the user document doesn't exist
         console.error("User document not found.");
@@ -63,6 +65,7 @@ function SignInForm() {
       const errorMessage = error.message;
       console.log(errorCode);
       console.log(errorMessage);
+      toast.error("Invalid email or password");
       setError(errorMessage); // Set the error message
     }
   };
@@ -93,7 +96,7 @@ function SignInForm() {
           onChange={handleChange}
         />
         <button className="loginbutton bg-customViolet">Sign In</button>
-        {error && <p className="text-red-700 border border-black">{error}</p>}
+        {/* {error && <p className="text-red-700 border border-black">{error}</p>} */}
       </form>
     </div>
   );

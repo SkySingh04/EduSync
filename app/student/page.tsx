@@ -16,6 +16,8 @@ import { useRouter } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { updateDoc, arrayUnion } from "firebase/firestore";
 import next from "next";
+import toast from "react-hot-toast";
+
 
 const Page = () => {
   const [selectedStudent, setSelectedStudent] = useState<string>("");

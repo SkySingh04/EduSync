@@ -9,6 +9,7 @@ import PageComponent from "../components/UploadForm";
 import { useRouter } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import callAPI from "../emailapi";
+import toast from "react-hot-toast";
 
 const Teacher = () => {
   const [apiResponse, setAPIResponse] = useState<string>("");
@@ -160,13 +161,15 @@ const Teacher = () => {
 
           await setDoc(timeslotRef, updatedData);
           console.log("Timeslot updated successfully!");
+          toast.success("Class scheduled successfully");
           setShowUserList(false);
           window.location.reload();
         } else {
-          console.error("Timeslot does not exist.");
+          toast.error("Timeslot does not exist.");
         }
-      } catch (error) {
+      } catch (error:any) {
         console.error("Error updating timeslot:", error);
+        toast.error(error.message);
       }
     } else {
       console.error("Please select student, teacher, and slot.");

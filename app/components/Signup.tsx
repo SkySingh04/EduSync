@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import toast from "react-hot-toast";
 
 function SignUpForm() {
   const router = useRouter();
@@ -44,6 +45,7 @@ function SignUpForm() {
          updateProfile(userCredential.user, {
           displayName: `${data.get("firstName")} ${data.get("lastName")}`,
         });
+        toast.success("Signed up successfully");
   
         router.push(`/${data.get("role")?.toString().toLowerCase()}`);
         // ...
@@ -53,13 +55,14 @@ function SignUpForm() {
         const errorMessage = error.message;
         console.log(errorCode);
         console.log(errorMessage);
-        // ..
+        toast.error(error.message);
       });
     
       
     } catch (error: any) {
       const errorMessage = error.message;
       console.error(errorMessage);
+      toast.error("Invalid email or password");
       setError(errorMessage);
     }
   };
@@ -109,7 +112,7 @@ function SignUpForm() {
 
         <button className="loginbutton bg-customViolet mt-4">Sign Up</button>
 
-        {error && <p className="text-red-700 mt-2">{error}</p>}
+        {/* {error && <p className="text-red-700 mt-2">{error}</p>} */}
       </form>
     </div>
   );

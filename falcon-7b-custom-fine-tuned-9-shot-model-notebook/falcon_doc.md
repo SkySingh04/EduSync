@@ -10,7 +10,7 @@ This notebook demonstrates how to utilize the **Falcon 7 Billion Parameter Model
     - Install the required modules using `pip install -r requirements.txt`.
 
 2. **Model Loading**:
-    - Load the Falcon 7 Billion Parameter Decoder only Model from Hugging Face Transformers developed by [tiiuae](https://huggingface.co/tiiuae/falcon-7b-instruct).
+    - Load the Falcon 7 Billion Parameter Decoder only Model from Hugging Face Transformers developed by [tiiuae(check for further details regarding the model)](https://huggingface.co/tiiuae/falcon-7b-instruct).
     - The model has been trained on a massive amount of text data (>=1 trillion tokens) and its architecture is highly optimized for inference.
 
 3. **Quantization And Sharding**:
@@ -53,4 +53,11 @@ This notebook demonstrates how to utilize the **Falcon 7 Billion Parameter Model
 ## License
 The Falcon 7 Billion Parameter Model is made available under the **Apache 2.0 license**.
 
+## Extra
+The notebook also contains code blocks to:
+- load the data from firebase.
+- establish a public api using ngrok service.
+- flask application to create the web interface and integration of the API.
+- helper functions to avoid repeatation and output filtering during model inference.
+  
 Feel free to customize this README! 🚀

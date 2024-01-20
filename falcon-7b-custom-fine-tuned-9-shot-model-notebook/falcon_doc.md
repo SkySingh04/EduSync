@@ -59,5 +59,3 @@ The notebook also contains code blocks to:
 - establish a public api using ngrok service.
 - flask application to create the web interface and integration of the API.
 - helper functions to avoid repeatation and output filtering during model inference.
-  
-Feel free to customize this README! 🚀

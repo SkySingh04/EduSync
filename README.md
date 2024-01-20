@@ -61,7 +61,8 @@ testteacher4@gmail.com
 - **Backend:** Flask
 - **Database:** Firebase (Firestore, Realtime Database)
 - **Edge Store:** EdgeStore
-- **AI Models:** Falcon 7B LLM Models
+- **AI Models:** Falcon 7B Instruct LLM Model
+- **Port forwarding:** ngrok
 
 ## License
 
@@ -70,5 +71,5 @@ This project is licensed under the [MIT License](LICENSE).
 ## Contributors
 - [**Akash Singh**](https://github.com/Akash-Singh04)
 - [Abhyuday Hari Prasad](https://github.com/abhyudayhari)
-- [Bhuvan M](https://github.com/@bhuvanmdev)
+- [bhuvanmdev](https://github.com/@bhuvanmdev)
 - [Pritish Patra](https://github.com/pritish0666)

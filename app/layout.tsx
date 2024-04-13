@@ -7,6 +7,8 @@ import Footer from "./components/Footer";
 import ChatWindow from "./components/chatbot";
 import ChatBotButton from "./components/chatbutton";
 import { Toaster } from 'react-hot-toast';
+import Head from 'next/head';
+
 const poppins = Poppins({ weight: "400", subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
@@ -21,6 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      
       <body className={poppins.className}>
         <Navbar />
         <Toaster position="bottom-left" />

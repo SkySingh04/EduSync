@@ -2,9 +2,10 @@
 import { useState, useEffect } from "react";
 import { useEdgeStore } from "../lib/edgestore";
 import { db } from "../firebase";
-import { getDocs, addDoc, collection, DocumentData } from "firebase/firestore";
+import { getDocs, addDoc, collection } from "firebase/firestore";
 import callAPI from "../emailapi";
 import toast from "react-hot-toast";
+
 interface User {
   uid: string;
   displayName: string;
@@ -39,8 +40,8 @@ export default function PageComponent() {
   }
 
   return (
-    <div className=" justify-center inline">
-      <div className="max-w-1/3 p-6 bg-black rounded-md shadow-md mt-20">
+    <div className="flex justify-center">
+      <div className="max-w-md p-6 bg-black rounded-md shadow-md mt-20">
         <input
           type="file"
           className="mb-4 p-2 border rounded-md"
@@ -92,7 +93,6 @@ export default function PageComponent() {
                   TeacherID: teacherID,
                   uploadedTime: new Date(),
                 });
-                console.log("successfull")
                 toast.success("File uploaded successfully");
                 callAPI(studentId,"Your teacher has uploaded a file for you. Please check your account. The file name is " + filename + "." + " You can download it from here: " + publicUrl);
               } catch (error) {

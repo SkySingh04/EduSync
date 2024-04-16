@@ -15,7 +15,7 @@ The live deployment of QuizQuest can be accessed at [EduSync](https://edu-sync-p
 Test Credentials:
 
 Admin:
-testadmin@gmail.com 
+admintest@gmail.com 
 123456  
 
 Student:

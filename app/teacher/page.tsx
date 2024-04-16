@@ -8,14 +8,21 @@ import { serverTimestamp } from "firebase/firestore";
 import PageComponent from "../components/UploadForm";
 import { useRouter } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import callAPI from "../emailapi";
 import toast from "react-hot-toast";
 
 const Teacher = () => {
+  const [apiResponse, setAPIResponse] = useState<string>("");
+  
+
+  const meetingLink = "https://meet.google.com/icy-vveg-aew";
   const [slotData, setSlotData] = useState<SlotData>({});
+  const [URL, setURL] = useState("");
+  const [selectedSlot, setSelectedSlot] = useState<string>("");
   const [showUserList, setShowUserList] = useState(false);
   const [day, setDay] = useState<Day>("Monday");
   const [time, setTime] = useState<Time>("9:00 AM");
-  const [usersList, setUsersList] = useState<any[]>([]);
+  const [usersList, setUsersList] = useState<any[]>([]); // Assuming your user data structure
   const [selectedStudent, setSelectedStudent] = useState<string>("");
   const [selectedSubject, setSelectedSubject] = useState<string>("");
   const subjectList = [
@@ -27,34 +34,38 @@ const Teacher = () => {
   ];
   const router = useRouter();
   const [userId, setUserId] = useState<string>("");
+  console.log(userId);
   const currentUserId = "rE1uFj99RNVkFoGSrdE97RikP5b2";
   const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const uid = user.uid;
+      setUserId(uid);
+      const userRef = doc(db, "users", uid);
+      const userDoc = getDoc(userRef)
+        .then((doc) => {
+          if (doc.exists()) {
+            console.log("Document data:", doc.data());
+            if (doc.data()?.role !== "Teacher") {
+              router.push("/login");
+            }
+          }
+        })
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
+    } else {
+      router.push("/login");
+    }
+  });
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const uid = user.uid;
-        setUserId(uid);
-        const userRef = doc(db, "users", uid);
-        const userDoc = getDoc(userRef)
-          .then((doc) => {
-            if (doc.exists()) {
-              console.log("Document data:", doc.data());
-              if (doc.data()?.role !== "Teacher") {
-                router.push("/login");
-              }
-            }
-          })
-          .catch((error) => {
-            console.log("Error getting document:", error);
-          });
-      } else {
-        router.push("/login");
-      }
-    });
+    fetchSlotsData();
   }, []);
 
   useEffect(() => {
+    // Fetch all users from your database here
+    // Replace this with your actual database call to get users with roles
     const fetchUsers = async () => {
       const userRef = collection(db, "users");
       const userDoc = await getDocs(userRef);
@@ -62,22 +73,27 @@ const Teacher = () => {
       userDoc.forEach((doc) => {
         userData.push(doc.data());
       });
+      console.log(userData);
+      const something: any = userData.filter(
+        (user: any) => user.role === "Teacher"
+      );
+      console.log(something);
       setUsersList(userData);
     };
 
     fetchUsers();
   }, []);
 
-  useEffect(() => {
-    fetchSlotsData();
-  }, []);
-
   const handleSlotClick = (day1: string, time1: string) => {
+    console.log(day1, time1);
+    setSelectedSlot(`${day1}-${time1}`);
     setDay(day1);
     setTime(time1);
+    setURL(meetingLink);
+    console.log(selectedSlot);
+    console.log(day, time);
     setShowUserList(true);
   };
-
   const filterSlotsByTeacher = (slots: SlotData, teacherId: string) => {
     const filteredSlots: SlotData = {};
 
@@ -95,7 +111,6 @@ const Teacher = () => {
 
     return filteredSlots;
   };
-
   async function handleButtonClick() {
     if (selectedStudent && day && time) {
       const selectedSlot = `${day}-${time}`;
@@ -107,6 +122,8 @@ const Teacher = () => {
         const timeslotDoc = await getDoc(timeslotRef);
         const studentDoc = await getDoc(studentRef);
         const teacherDoc = await getDoc(teacherRef);
+        console.log(studentDoc.data());
+        console.log(teacherDoc.data());
         if (
           timeslotDoc.exists() &&
           studentDoc.exists() &&
@@ -123,6 +140,7 @@ const Teacher = () => {
                 name: studentData.displayName,
                 studentId: selectedStudent,
                 subject: selectedSubject,
+                meetingLink: URL, // You might retrieve this data from somewhere
               },
             ],
             teachers: [
@@ -134,6 +152,7 @@ const Teacher = () => {
             time,
           };
 
+          // Merge existing data with new data
           const updatedData = {
             ...existingData,
             students: [...(existingData.students || []), newData.students[0]],
@@ -141,9 +160,10 @@ const Teacher = () => {
           };
 
           await setDoc(timeslotRef, updatedData);
+          console.log("Timeslot updated successfully!");
           toast.success("Class scheduled successfully");
           setShowUserList(false);
-          fetchSlotsData();
+          window.location.reload();
         } else {
           toast.error("Timeslot does not exist.");
         }
@@ -185,16 +205,10 @@ const Teacher = () => {
       }
     }
     const filteredSlots = filterSlotsByTeacher(data, currentUserId);
+    console.log("filteredSlots");
+    console.log(filteredSlots);
     setSlotData(filteredSlots);
   };
-
-  function handleUserSelect(role: string, userId: string) {
-    if (role === "student") {
-      setSelectedStudent(userId);
-    } else if (role === "subject") {
-      setSelectedSubject(userId);
-    }
-  }
 
   const generateTimeSlots = () => {
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -210,97 +224,114 @@ const Teacher = () => {
     ];
 
     return (
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr>
-              <th></th>
-              {days.map((day, index) => (
-                <th key={index} className="text-center font-bold">
-                  {day}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {timings.map((time, idx) => (
-              <tr key={idx}>
-                <td className="text-center font-bold">{time}</td>
-                {days.map((day, index) => (
-                  <td
-                    key={`${day}-${idx}`}
-                    className="border border-black text-black bg-blue-200"
+      <div className="grid grid-cols-6 gap-4">
+        {/* Days */}
+        <div className="col-span-1"></div>
+        {days.map((day, index) => (
+          <div key={index} className="col-span-1 text-center font-bold h-10">
+            {day}
+          </div>
+        ))}
+
+        {/* Time slots */}
+        {timings.map((time, idx) => (
+          <React.Fragment key={idx}>
+            <div className="col-span-1 text-center font-bold h-10">{time}</div>
+            {days.map((day, index) => (
+              <div
+                key={`${day}-${idx}`}
+                className="col-span-1 bg-blue-200 p-2 border border-gray-400 text-black"
+              >
+                {/* Display teachers and students in the slot */}
+                <div>
+                  <h3 className="text-lg font-semibold">Teachers:</h3>
+                  <ol>
+                    {slotData[`${day}-${time}`]?.teachers?.map(
+                      (teacher: Teacher, index) => (
+                        <li key={index}>
+                          {index + 1} : {teacher.name}
+                        </li>
+                      )
+                    )}
+                  </ol>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Students:</h3>
+                  <ol>
+                    {slotData[`${day}-${time}`]?.students?.map(
+                      (student: Student, index) => (
+                        <li key={index}>
+                          {index + 1} : {student.name}
+                          <br />
+                          Subject :<b> {student.subject}</b>
+                          <br></br>
+                          <a
+                          className="link-hover text-blue-600"
+                           href={meetingLink}>Meeting Link</a>
+                        </li>
+                        
+                        
+                      )
+                    )}
+                  </ol>
+                  <button
+                    onClick={() => handleSlotClick(day, time)}
+                    className=" bg-green-400 text-black px-2 py-1 rounded-full"
                   >
-                    <div className="p-2">
-                      <div className="mb-2">
-                        <h3 className="text-lg font-semibold">Teachers:</h3>
-                        <ul className="list-disc pl-4">
-                          {slotData[`${day}-${time}`]?.teachers?.map(
-                            (teacher: Teacher, index) => (
-                              <li key={index}>{teacher.name}</li>
-                            )
-                          )}
-                        </ul>
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-semibold">Students:</h3>
-                        <ul className="list-disc pl-4">
-                          {slotData[`${day}-${time}`]?.students?.map(
-                            (student: Student, index) => (
-                              <li key={index}>{student.name}</li>
-                            )
-                          )}
-                        </ul>
-                        <button
-                          onClick={() => handleSlotClick(day, time)}
-                          className="bg-green-400 text-black px-2 py-1 rounded-full mt-2 block mx-auto"
-                        >
-                          Schedule Class
-                        </button>
-                      </div>
-                    </div>
-                  </td>
-                ))}
-              </tr>
+                    Add Class
+                  </button>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </React.Fragment>
+        ))}
       </div>
     );
   };
-
+  function handleUserSelect(role: string, userId: string) {
+    if (role === "student") {
+      setSelectedStudent(userId);
+    } else if (role === "subject") {
+      setSelectedSubject(userId);
+    }
+  }
   return (
     <div className="">
-      <div className="flex justify-center flex-col lg:flex-row">
-        <div className="w-full lg:w-full lg:hidden p-4">
+      {/* <div>
+      <button onClick={callAPI}>Call API</button>
+
+      <div>
+        <h3>API Response:</h3>
+        <pre>{apiResponse}</pre>
+      </div>
+    </div> */}
+
+      <div className="flex justify-center items-center">
+        <div className="w-1/2 p-4">
           <h1 className="text-6xl ml-[95px] font-bold mb-4">
             Teacher Dashboard
           </h1>
-          <PageComponent />
         </div>
-        <div className="hidden lg:block w-full lg:w-1/2 p-4 mb-4 lg:mb-0">
-          <h1 className="text-6xl ml-[95px] font-bold mb-4">
-            Teacher Dashboard
-          </h1>
+        <div className="w-1/2 p-4">
           <PageComponent />
-        </div>
-        <div className="w-full lg:w-1/2 p-4">
-          {generateTimeSlots()}
         </div>
       </div>
 
+      {generateTimeSlots()}
+      {/* Show user list popup */}
       {showUserList && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
           <div className="bg-white p-8 rounded shadow-lg text-black">
             <h2 className="text-xl font-semibold mb-4">Select User</h2>
+            {/* Dropdown for selecting students */}
             <div className="mb-4">
               <label htmlFor="studentsDropdown" className="mr-2">
                 Students:
               </label>
               <select
                 id="studentsDropdown"
-                className="text-white"
                 onChange={(e) => handleUserSelect("student", e.target.value)}
+                className="text-white"
               >
                 <option value="">Select Student</option>
                 {usersList
@@ -318,8 +349,8 @@ const Teacher = () => {
               </label>
               <select
                 id="subjectsDropdown"
-                className="text-white"
                 onChange={(e) => handleUserSelect("subject", e.target.value)}
+                className="text-white"
               >
                 <option value="">Select Subject</option>
                 {subjectList.map((subject, index) => (
@@ -329,6 +360,8 @@ const Teacher = () => {
                 ))}
               </select>
             </div>
+            {/* Dropdown for selecting teachers */}
+            {/* Button to trigger onClick function */}
             <button
               onClick={handleButtonClick}
               className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -343,3 +376,31 @@ const Teacher = () => {
 };
 
 export default Teacher;
+
+// const createAllTimeSlots = async () => {
+//   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+//   const timings = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'];
+
+// //   const timeslotsRef = collection(db, 'timeslots');
+
+//   for (const day of days) {
+//     for (const time of timings) {
+
+//         const docRef = await getDocs(collection(db, 'timeslots'))
+//         docRef.forEach((doc:any) => {
+//             console.log(`${doc.id} => ${doc.data()}`);
+//           });
+//       const data = {
+//         day,
+//         time,
+//         teachers: [],
+//         students: [],
+//         createdAt: Timestamp.now(), // Optionally include a createdAt timestamp
+//       };
+
+//       await setDoc(doc(db, 'timeslots', `${day}-${time}`), data);
+//     }
+//   }
+
+//   console.log('All timeslots created!');
+// };

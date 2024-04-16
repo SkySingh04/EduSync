@@ -194,73 +194,159 @@ const Admin = () => {
     ];
 
     return (
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr>
-              <th></th>
-              {days.map((day, index) => (
-                <th key={index} className="text-center font-bold">
-                  {day}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {timings.map((time, idx) => (
-              <tr key={idx}>
-                <td className="text-center font-bold">{time}</td>
-                {days.map((day, index) => (
-                  <td
-                    key={`${day}-${idx}`}
-                    className="border border-black text-black bg-blue-200"
+      <div className="grid grid-cols-6 gap-4">
+        {/* Days */}
+        <div className="col-span-1"></div>
+        {days.map((day, index) => (
+          <div key={index} className="col-span-1 text-center font-bold h-10">
+            {day}
+          </div>
+        ))}
+
+        {/* Time slots */}
+        {timings.map((time, idx) => (
+          <React.Fragment key={idx}>
+            <div className="col-span-1 text-center font-bold h-10">{time}</div>
+            {days.map((day, index) => (
+              <div
+                key={`${day}-${idx}`}
+                className="col-span-1 bg-blue-200 p-2 border border-gray-400 text-black"
+              >
+                {/* Display teachers and students in the slot */}
+                <div>
+                  <h3 className="text-lg font-semibold">Teachers:</h3>
+                  <ul>
+                    {slotData[`${day}-${time}`]?.teachers?.map(
+                      (teacher: Teacher, index) => (
+                        <li key={index}>
+                          {index + 1} : {teacher.name}
+                          <br>
+                          </br>
+                        </li>
+                      )
+                    )}
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Students:</h3>
+                  <ul>
+                    {slotData[`${day}-${time}`]?.students?.map(
+                      (student: Student, index) => (
+                        <li key={index}>
+                        {index +1} :   {student.name}
+                        <br />
+                        Subject :<b> {student.subject}</b>
+                        <br></br>
+                        <a
+                          className="link-hover text-blue-600"
+                           href={meetingLink}>Meeting Link</a>
+                        </li>
+                      )
+                    )}
+                  </ul>
+                  <button
+                    onClick={() => handleSlotClick(day, time)}
+                    className=" bg-green-400 text-black px-2 py-1 rounded-full"
                   >
-                    <div className="p-2">
-                      <div className="mb-2">
-                        <h3 className="text-lg font-semibold">Teachers:</h3>
-                        <ul>
-                          {slotData[`${day}-${time}`]?.teachers?.map(
-                            (teacher: Teacher, index) => (
-                              <li key={index}>{teacher.name}</li>
-                            )
-                          )}
-                        </ul>
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-semibold">Students:</h3>
-                        <ul>
-                          {slotData[`${day}-${time}`]?.students?.map(
-                            (student: Student, index) => (
-                              <li key={index}>{student.name}</li>
-                            )
-                          )}
-                        </ul>
-                        <button
-                          onClick={() => handleSlotClick(day, time)}
-                          className="bg-green-400 text-black px-2 py-1 rounded-full mt-2 block mx-auto"
-                        >
-                          Schedule Class
-                        </button>
-                      </div>
-                    </div>
-                  </td>
-                ))}
-              </tr>
+                    Schedule Class
+                  </button>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </React.Fragment>
+        ))}
       </div>
     );
   };
-
+  function handleUserSelect(role: string, userId: string) {
+    if (role === "student") {
+      setSelectedStudent(userId);
+    } else if (role === "teacher") {
+      setSelectedTeacher(userId);
+    }
+    else if (role === "subject") {
+      setSelectedSubject(userId);}
+  }
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
       {generateTimeSlots()}
       {/* Show user list popup */}
-      {/* Your existing code... */}
+      {showUserList && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
+          <div className="bg-white p-8 rounded shadow-lg text-black">
+            <h2 className="text-xl font-semibold mb-4">Select User</h2>
+            {/* Dropdown for selecting students */}
+            <div className="mb-4">
+              <label htmlFor="studentsDropdown" className="mr-2">
+                Students:
+              </label>
+              <select
+                id="studentsDropdown"
+                onChange={(e) => handleUserSelect("student", e.target.value)}
+                className="text-white"
+              >
+                <option value="">Select Student</option>
+                {usersList
+                  .filter((user) => user.role === "Student")
+                  .map((student, index) => (
+                    <option key={index} value={student.uid}>
+                      {student.displayName}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            {/* Dropdown for selecting teachers */}
+            <div className="mb-4">
+              <label htmlFor="teachersDropdown" className="mr-2">
+                Teachers:
+              </label>
+              <select
+                id="teachersDropdown"
+                onChange={(e) => handleUserSelect("teacher", e.target.value)}
+                className="text-white"
+              >
+                <option value="">Select Teacher</option>
+                {usersList
+                  .filter((user) => user.role === "Teacher")
+                  .map((teacher, index) => (
+                    <option key={index} value={teacher.uid}>
+                      {teacher.displayName}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="subjectsDropdown" className="mr-2">
+                Subjects:
+              </label>
+              <select
+                id="subjectsDropdown"
+                onChange={(e) => handleUserSelect("subject", e.target.value)}
+                className="text-white"
+              >
+                <option value="">Select Subject</option>
+                {subjectList
+                  .map((subject, index) => (
+                    <option key={index} value={subject}>
+                      {subject}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            {/* Button to trigger onClick function */}
+            <button
+              onClick={handleButtonClick}
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Select User
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Admin;
+

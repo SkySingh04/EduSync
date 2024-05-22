@@ -68,8 +68,9 @@ testteacher4@gmail.com
 
 This project is licensed under the [MIT License](LICENSE).
 
-## Contributors
+## Contributors : Check the full list [here](https://github.com/Akash-Singh04/EduSync/graphs/contributors) 
 - [**Akash Singh**](https://github.com/Akash-Singh04)
+- [Alfiya Fatima](https://github.com/alfiyafatima09)
 - [Abhyuday Hari Prasad](https://github.com/abhyudayhari)
 - [bhuvanmdev](https://github.com/@bhuvanmdev)
 - [Pritish Patra](https://github.com/pritish0666)

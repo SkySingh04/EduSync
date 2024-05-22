@@ -1,10 +1,10 @@
-'use client'
-import React, { useEffect, useState } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import {auth} from '../firebase';
-import { useRouter } from 'next/navigation';
-import { signOut } from 'firebase/auth';
-import toast from 'react-hot-toast';
+"use client";
+import React, { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
+import { useRouter } from "next/navigation";
+import { signOut } from "firebase/auth";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const [user, setUser] = useState(null); // Use state to track the user's authentication state
@@ -12,7 +12,7 @@ const Navbar = () => {
 
   // Add a useEffect to listen for changes in the user's authentication state
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user:any) => {
+    const unsubscribe = onAuthStateChanged(auth, (user: any) => {
       setUser(user); // Update the user state when the authentication state changes
     });
 
@@ -24,16 +24,17 @@ const Navbar = () => {
 
   const handlesignOut = () => {
     // Sign out the user
-    signOut(auth).then(() => {
-      // Sign-out successful.
-      console.log("Sign out successful");
-      toast.success("Signed out successfully");
-      router.push(`/`);
-
-    }).catch((error) => {
-      // An error happened.
-      console.log(error);
-    });
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+        console.log("Sign out successful");
+        toast.success("Signed out successfully");
+        router.push(`/`);
+      })
+      .catch((error) => {
+        // An error happened.
+        console.log(error);
+      });
 
     // After successful sign-out, you can also clear the user state if needed
     setUser(null);
@@ -42,31 +43,34 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar  relative top-0 w-full z-50 bg-slate-800 text-white">
+    <div className="navbar  relative top-0 w-full z-50 bg-slate-800 text-white ">
       <div className="navbar-start">
-        <a href="/" className="text-2xl font-bold p-2">
+        <a href="/" className="text-4xl font-bold p-2 font-sans">
           EduSync {/* Add your logo here */}
         </a>
       </div>
-      <div className="navbar-end text-center">
-        <ul className="menu menu-horizontal px-0 ">
-          <li><a href="/">Home</a></li>
+      <div className="navbar-end text-center ">
+        <ul className="menu menu-horizontal px-0  ">
+          <li>
+            <a href="/">Home</a>
+          </li>
           {user ? ( // Check if the user is logged in
             <>
               <li>
                 <a onClick={handlesignOut}>Sign Out</a>
               </li>
-
             </>
           ) : (
             <>
-              <li><a href="/login">Login</a></li>
+              <li>
+                <a href="/login">Login</a>
+              </li>
             </>
           )}
         </ul>
       </div>
     </div>
   );
-}
+};
 
 export default Navbar;
